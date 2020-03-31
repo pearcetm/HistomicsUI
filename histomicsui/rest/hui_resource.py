@@ -243,3 +243,117 @@ class HistomicsUIResource(Resource):
         # Finally, we turn the iterator into an explicit list for return to the
         # user.  Girder handles json encoding the response.
         return list(response)
+
+    @autoDescribeRoute(
+        Description("Get metadata schema based on an folder\'s id or a collection\'s id.")
+        .param('id', 'The ID of the folder or the collection.', paramType='path')
+        .param('type', 'The type of the resource',
+               # an item won't have schema but folder and collection would
+               enum=['folder', 'collection'])
+        .errorResponse('ID was invalid.')
+        .errorResponse('Access was denied for the resource.', 403)
+    )
+    @access.public
+    def getMetadataSchema(self, id, params):
+        user = self.getCurrentUser()
+        modelType = params['type']
+        schema = {}
+        model = ModelImporter.model(modelType)
+        doc = model.load(id=id, user=user, level=AccessType.READ)
+        if doc.get('meta'):
+            meta = doc.get('meta')
+            # if the current folder already has its own schema then return it
+            if meta.get('schema'):
+                schema['schema'] = doc['meta']['schema']
+                # call the validation on the data
+                return schema
+                # validate(meta,schema)
+        else:
+            if doc.get('parentId'):
+                # keep looking up for a schema until reach root folder
+                while doc.get('baseParentId') != doc.get('parentId'):
+                    # if find the parent folder and the schema from metadata,return it
+                    if doc.get('meta'):
+                        meta = doc.get('meta')
+                        if meta.get('schema'):
+                            schema['schema'] = doc['meta']['schema']
+                            # validate(meta,schema)
+                            return schema
+                        parentId = doc.get('parentId')
+                        parentModel = doc.get('parentCollection')
+                        doc = ModelImporter.model(parentModel).load(id=parentId, user=user,
+                                                                    level=AccessType.READ)
+                    else:
+                        parentId = doc.get('parentId')
+                        parentModel = doc.get('parentCollection')
+                        doc = ModelImporter.model(parentModel).load(id=parentId, user=user,
+                                                                    level=AccessType.READ)
+                # one last check for the case when the schema is in the root folder/collection
+                parentId = doc.get('parentId')
+                parentModel = doc.get('parentCollection')
+                # reload the doc with
+                doc = ModelImporter.model(parentModel).load(id=parentId, user=user,
+                                                            level=AccessType.READ)
+                if doc.get('meta'):
+                    meta = doc.get('meta')
+                    if meta.get('schema'):
+                        schema['schema'] = doc['meta']['schema']
+                        # validate(meta,schema)
+                        return schema
+                # return 'No schema from any parent folder'
+                return 0
+            else:
+                # return 'No parent folder or collection has schema'
+                return 0
+        # return 'No schema'
+        return 0
+
+    # def validate(meta,schema):
+    #     print('Hi')
+    #     metadata_schema = schema
+    #     schema = json.loads(metadata_schema)
+    #     # validate(instance=meta,schema=schema)
+    #     return validate(instance=meta,schema=schema)
+
+# """
+# {
+#     "$schema": "http://json-schema.org/schema#",
+#     "additionalProperties": true,
+#     "$id": "/girder/plugins/large_image/models/annotation",
+#     "title":"metadata_schema",
+#     "properties": {
+#         "stain": {
+#           "description": "The stain type of a metadata",
+#           "enum": [
+#             "H&E",
+#             "PAS",
+#             "Endospore"
+#           ],
+#           "type": "string"
+#         },
+#         "magification":{
+#             "description": "The magification of a metadata which should be a positive float",
+#             "minimum": 0,
+#             "maximum": 40,
+#             "type": "number"
+#         },
+#          "boolean":{
+#            "type":"boolean"
+#          },
+#          "enum":{
+#            "type":["string","number"]
+#          },
+#          "integer":{
+#            "minimum": 1,
+#            "type":"number"
+#          },
+#           "float":{
+#            "type":"number"
+#          },
+#           "text":{
+#            "type":"string"
+#          }
+#     },
+#     "type": "object"
+# }
+# """
