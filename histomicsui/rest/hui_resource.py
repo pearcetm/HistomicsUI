@@ -1,4 +1,8 @@
 import datetime
+# validate json
+# import json
+# import jsonschema
+# from jsonschema import validate
 
 from girder import logger
 from girder.api import access
@@ -10,7 +14,6 @@ from girder.models.folder import Folder
 from girder.models.item import Item
 from girder.models.setting import Setting
 from girder.utility.model_importer import ModelImporter
-
 from ..constants import PluginSettings
 from .system import allChildFolders, allChildItems
 
@@ -19,7 +22,6 @@ class HistomicsUIResource(Resource):
     def __init__(self):
         super(HistomicsUIResource, self).__init__()
         self.resourceName = 'histomicsui'
-
         self.route('GET', ('settings',), self.getPublicSettings)
         self.route('PUT', ('quarantine', ':id'), self.putQuarantine)
         self.route('PUT', ('quarantine', ':id', 'restore'), self.restoreQuarantine)
@@ -41,16 +43,16 @@ class HistomicsUIResource(Resource):
         #  `GET /api/v1/histomicsui/query_metadata`
         self.route('GET', ('query_metadata',), self.findItemsByMetadata)
 
+        self.route('GET', ('metadata_schema', ':id'), self.getMetadataSchema)
+
     @describeRoute(
         Description('Get public settings for HistomicsUI.')
     )
     @access.public
     def getPublicSettings(self, params):
         keys = [
-            PluginSettings.HUI_BRAND_NAME,
             PluginSettings.HUI_DEFAULT_DRAW_STYLES,
             PluginSettings.HUI_QUARANTINE_FOLDER,
-            PluginSettings.HUI_WEBROOT_PATH
         ]
         result = {k: Setting().get(k) for k in keys}
         result[PluginSettings.HUI_QUARANTINE_FOLDER] = bool(
@@ -300,13 +302,13 @@ class HistomicsUIResource(Resource):
                         schema['schema'] = doc['meta']['schema']
                         # validate(meta,schema)
                         return schema
-                # return 'No schema from any parent folder'
-                return 0
+                return 'No schema from any parent folder'
+                #return 0
             else:
-                # return 'No parent folder or collection has schema'
-                return 0
-        # return 'No schema'
-        return 0
+                return 'No parent folder or collection has schema'
+                #return 0
+        return 'No schema'
+        #return 0
 
     # def validate(meta,schema):
     #     print('Hi')
