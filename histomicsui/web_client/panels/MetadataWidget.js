@@ -512,10 +512,11 @@ var MetadataWidget = Panel.extend({
                     // if the value is a json object, JSON.stringify to make it more readable
                     firstValue = JSON.stringify(firstValue);
                 }
-                 // this.get(apiUrl, function(data) => {
+                // this.get(apiUrl, function(data) => {
                 $.get(apiUrl, metaKeys, function (data) {
+                    console.log('1 '+data);
                     // when there is a data schema presented
-                    if (data.schema.properties) {
+                    if (data) {
                         metadataSchema = data.schema.properties;
                         for (var key in metadataSchema) {
                             keysOptionList.push(key);
@@ -528,6 +529,7 @@ var MetadataWidget = Panel.extend({
                                     existKeysList.push(key);
                                     // add validated pairs
                                     validatedMetadata[key] = metadataSchema[key];
+                                    // todo: validate the value!!
                                     keysOptionList.pop(key);
                                }
                             }
@@ -537,6 +539,7 @@ var MetadataWidget = Panel.extend({
                         // console.log(existKeysList);
                     }
                     else {
+                        console.log(metaKeys);
                         // no schema presented
                         metadataSchema = 0;
                     }
@@ -573,7 +576,7 @@ var MetadataWidget = Panel.extend({
                 } else {
                     var metadataForDisplay = {};
                     // return a sorted validated keys and corresponding values
-                    metadataForDisplay =  sortOnKeys(validatedMetadata);
+                    metadataForDisplay =  this.sortOnKeys(validatedMetadata);
                     // fisrt key and value pair
                     firstKey = (metadataForDisplay)[0];
                     firstValue = metadataForDisplay[firstKey];

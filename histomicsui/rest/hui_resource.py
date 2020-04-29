@@ -310,13 +310,6 @@ class HistomicsUIResource(Resource):
         return 'No schema'
         #return 0
 
-    # def validate(meta,schema):
-    #     print('Hi')
-    #     metadata_schema = schema
-    #     schema = json.loads(metadata_schema)
-    #     # validate(instance=meta,schema=schema)
-    #     return validate(instance=meta,schema=schema)
-
 # """ where to put the schema???
 # {
 #     "$schema": "http://json-schema.org/schema#",

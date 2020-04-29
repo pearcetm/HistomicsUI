@@ -12,10 +12,11 @@
         button.g-widget-metadata-add-button.btn.btn-sm.btn-primary.btn-default.dropdown-toggle(data-toggle="dropdown", title="Add Metadata")
           i.icon-plus
         ul.dropdown-menu.pull-right(role="menu")
-        -// add dropdown menu for key options and disable changes for existing key
+        -// add dropdown menu for key options
           li(role="presentation")
             a.g-add-simple-metadata(role="menuitem")
               | Simple
+        -// to implement: JSON as key
           li(role="presentation")
             a.g-add-json-metadata
               | JSON
@@ -42,3 +43,12 @@ if !collapsed
             -// select#metadata
             -//   each key in metadata
             -//   option = key
+            -//disable edit for existing key, only allow edit value
+// .metadata-schema-container
+//   .dropdown
+//     button.g-widget-metadata-key-option-button.btn.btn-sm.btn-primary.btn-default.dropdown-toggle(data-toggle="dropdown", title="Key Options")
+//     ul.dropdown-menu(role='menu')
+//       each key in metadata
+//        li(role='presentation')
+//           a(role='menuitem' value=key) metadata[key]
+// implement slider for magnification
