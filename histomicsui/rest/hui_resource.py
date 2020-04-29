@@ -317,7 +317,7 @@ class HistomicsUIResource(Resource):
     #     # validate(instance=meta,schema=schema)
     #     return validate(instance=meta,schema=schema)
 
-# """
+# """ where to put the schema???
 # {
 #     "$schema": "http://json-schema.org/schema#",
 #     "additionalProperties": true,
