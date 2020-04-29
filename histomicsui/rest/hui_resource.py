@@ -310,35 +310,35 @@ class HistomicsUIResource(Resource):
         return 'No schema'
         #return 0
 
-# """ where to put the schema???
+# """ where to put the schema??? auto populate example schema
 # {
 #     "$schema": "http://json-schema.org/schema#",
 #     "additionalProperties": true,
-#     "$id": "/girder/plugins/large_image/models/annotation",
+#     "$id": "/girder/plugins/large_image/models/annotation", //by default
 #     "title":"metadata_schema",
 #     "properties": {
 #         "stain": {
 #           "description": "The stain type of a metadata",
-#           "enum": [
+#           "enum": [ //select box
 #             "H&E",
 #             "PAS",
 #             "Endospore"
-#           ],
+#           ],// order, position
 #           "type": "string"
 #         },
-#         "magification":{
+#         "magification":{//slider
 #             "description": "The magification of a metadata which should be a positive float",
 #             "minimum": 0,
 #             "maximum": 40,
 #             "type": "number"
 #         },
-#          "boolean":{
+#          "boolean":{ //check box
 #            "type":"boolean"
 #          },
 #          "enum":{
 #            "type":["string","number"]
 #          },
-#          "integer":{
+#          "integer":{//input box
 #            "minimum": 1,
 #            "type":"number"
 #          },

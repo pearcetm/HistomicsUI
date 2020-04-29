@@ -512,7 +512,6 @@ var MetadataWidget = Panel.extend({
                     // if the value is a json object, JSON.stringify to make it more readable
                     firstValue = JSON.stringify(firstValue);
                 }
-                // this.get(apiUrl, function(data) => {
                 $.get(apiUrl, metaKeys, function (data) {
                     console.log('1 '+data);
                     // when there is a data schema presented
@@ -544,6 +543,8 @@ var MetadataWidget = Panel.extend({
                         metadataSchema = 0;
                     }
                 });
+                // .then(() => { //use the data });
+
                 // Issue!! cannot get the metadataSchema outside the get function??
                 // console.log(metadataSchema);
                 // use different template depends on whether there is a schema
